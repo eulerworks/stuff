@@ -1,5 +1,16 @@
 #!/bin/bash
+#####################################################################
+# J.S. PEIRCE
+# EULERWORKS INC
+# 24 JANUARY 2016
+# VERY SIMPLE LITTLE UTILITY SCRIPT TO CONVERT ASCII TO ITS
+# HEXADECIMAL NOTATION, I RECOMMEND PLACING IT IN A DIRECTORY IN
+# YOUR $PATH SO IT CAN BE CALLED FROM ANYWHERE. HAPPY HEXING!
+#####################################################################
 
 echo -n $1 | xxd -ps | sed 's/[[:xdigit:]]\{2\}/\\x&/g'
 
 exit 0
+#####################################################################
+# EOF
+#####################################################################
