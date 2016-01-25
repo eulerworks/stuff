@@ -1,0 +1,69 @@
+#!/bin/bash
+#####################################################################
+# J.S. PEIRCE
+# EULERWORKS INC
+# 20 JULY 2015
+#  
+# BASH SCRIPT TO COPY AN IMAGE FOR A RASPBERRY PI TO AN ATTACHED DISK
+# TO CREATE AN OS IMAGE, SHOULD WORK FOR ANY INFLATED IMAGE
+# TODO: 
+#	-VERIFY USER ENTRIES PRIOR TO INVOKING DD...(DISK DESTROYER!)	
+#####################################################################
+#list available disks
+
+echo These are available disks, please pick from the list...
+echo Enter choice as ONLY the 2nd part of the name
+echo EXAMPLE: for /dev/disk1s2 simply enter: disk1s2
+
+#list available disks:
+diskutil list
+
+#prompt for source file:
+echo Enter source as FULL directory string:
+echo EXAMPLE: /Volumes/Users/Desktop/example_image.img
+read SOURCE
+
+#prompt for drive to copy to:
+echo Enter which drive to copy TO:
+read DRIVE
+
+#print entered info to user terminal:
+echo You entered: $SOURCE is being copied to: $DRIVE 
+
+#verify settings:
+echo Is this correct\?
+echo Enter 1 if CORRECT, 0 if NOT
+read CHOICE
+
+#if the choice is correct...invoke DD!
+if [ 1 -eq $CHOICE ]; then
+
+#####################################################################
+# Settings are valid, CONTINUE: 
+#####################################################################
+
+#unmount the chosen destination disk:
+diskutil unmountDisk /dev/$DRIVE
+
+echo Copying image to /dev/$DISK
+
+#actual workhorse: copy SOURCE to DESTINATION...
+sudo dd if=$SOURCE of=/dev/$DRIVE bs=1m
+
+#if the operation exits with '0' then the op should have succeeded
+if [ 0 -eq `echo $?` ]; then
+	echo successfully copied image to $DISK
+#otherwise, notify user of the failure
+else 
+	echo image failed to copy
+fi #end of exit code check
+
+#settings were verified as INCORRECT, abort script:
+else 
+	echo Aborting image copy
+fi #end of verification
+
+exit 0
+#####################################################################
+# EOF
+#####################################################################
